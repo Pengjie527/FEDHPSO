@@ -111,7 +111,7 @@ class LocalSite:
         return self.features
 
     
-    def determine_optimal_clusters(self, method: str = 'improved_heuristic', 
+    def determine_optimal_clusters(self, method: str = 'el_bow',
                                     min_k: int = 2, max_k: int = 50,
                                     test_k_range: tuple = None):
         """
@@ -138,7 +138,6 @@ class LocalSite:
         """
         n_samples = len(self.data)
         n_features = len(self.features.columns)
-        
         if method == 'improved_heuristic':
             # 改进的启发式规则
             # 1. 基于样本数：使用平方根规则，但更保守
@@ -513,7 +512,7 @@ def run_local_clustering_all_sites(
     random_state: int = 42,
     use_first_bloc_only: bool = True,
     auto_determine_k: bool = True,
-    k_method: str = 'improved_heuristic',
+    k_method: str = 'silhouette', #在这里修改聚类方法
     min_k: int = 2,
     max_k: int = 50,
     test_k_range: tuple = None
@@ -904,9 +903,9 @@ if __name__ == "__main__":
     project_root = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..'))
     
     data_paths = {
-        1: os.path.join(project_root, "Dataset/datawithnum/group1_mimic_data.csv"),
-        2: os.path.join(project_root, "Dataset/datawithnum/group2_mimic_data.csv"),
-        3: os.path.join(project_root, "Dataset/datawithnum/group3_mimic_data.csv")
+        1: os.path.join(project_root, "Dataset/datawithser/group1_mimic_data.csv"),
+        2: os.path.join(project_root, "Dataset/datawithser/group2_mimic_data.csv"),
+        3: os.path.join(project_root, "Dataset/datawithser/group3_mimic_data.csv")
     }
     
     sites, upload_infos = run_local_clustering_all_sites(

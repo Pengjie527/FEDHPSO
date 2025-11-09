@@ -1,0 +1,22 @@
+{
+  "timestamp": "20251028_005540",
+  "n_clusters": 100,
+  "n_features": 47,
+  "n_sites": 3,
+  "n_iterations": 2,
+  "converged": true,
+  "site_info": {
+    "1": {
+      "n_samples": 11507,
+      "inertia": 332084.83265219384
+    },
+    "2": {
+      "n_samples": 7321,
+      "inertia": 211401.26659157546
+    },
+    "3": {
+      "n_samples": 2092,
+      "inertia": 59907.391361361966
+    }
+  }
+}

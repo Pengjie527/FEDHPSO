@@ -1,0 +1,85 @@
+{
+  "target_variable": "died_in_hosp",
+  "top_features": [
+    {
+      "feature": "age",
+      "importance": 0.056828112997158675
+    },
+    {
+      "feature": "Platelets_count",
+      "importance": 0.038503234558948045
+    },
+    {
+      "feature": "Shock_Index",
+      "importance": 0.03648380149542222
+    },
+    {
+      "feature": "Arterial_lactate",
+      "importance": 0.034533331614411196
+    },
+    {
+      "feature": "RR",
+      "importance": 0.03386451934090567
+    },
+    {
+      "feature": "WBC_count",
+      "importance": 0.033476973002982996
+    },
+    {
+      "feature": "PaO2_FiO2",
+      "importance": 0.029267973365212443
+    },
+    {
+      "feature": "SpO2",
+      "importance": 0.02798656042540556
+    },
+    {
+      "feature": "GCS",
+      "importance": 0.027813580717143085
+    },
+    {
+      "feature": "Temp_C",
+      "importance": 0.027456943851518256
+    }
+  ],
+  "metrics": {
+    "roc_auc": 0.7423713315607484,
+    "classification_report": {
+      "0": {
+        "precision": 0.8721872187218722,
+        "recall": 0.9797775530839231,
+        "f1-score": 0.9228571428571428,
+        "support": 1978.0
+      },
+      "1": {
+        "precision": 0.5,
+        "recall": 0.12345679012345678,
+        "f1-score": 0.19801980198019803,
+        "support": 324.0
+      },
+      "accuracy": 0.8592528236316247,
+      "macro avg": {
+        "precision": 0.6860936093609361,
+        "recall": 0.55161717160369,
+        "f1-score": 0.5604384724186704,
+        "support": 2302.0
+      },
+      "weighted avg": {
+        "precision": 0.8198029186063698,
+        "recall": 0.8592528236316247,
+        "f1-score": 0.8208383338023514,
+        "support": 2302.0
+      }
+    },
+    "confusion_matrix": [
+      [
+        1938,
+        40
+      ],
+      [
+        284,
+        40
+      ]
+    ]
+  }
+}

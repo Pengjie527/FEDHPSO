@@ -1,0 +1,150 @@
+{
+  "target_variable": "died_in_hosp",
+  "selected_features": [
+    {
+      "feature": "gender",
+      "importance": 0.03571428571428571
+    },
+    {
+      "feature": "mechvent",
+      "importance": 0.03571428571428571
+    },
+    {
+      "feature": "Weight_kg",
+      "importance": 0.03571428571428571
+    },
+    {
+      "feature": "SysBP",
+      "importance": 0.03571428571428571
+    },
+    {
+      "feature": "DiaBP",
+      "importance": 0.03571428571428571
+    },
+    {
+      "feature": "RR",
+      "importance": 0.03571428571428571
+    },
+    {
+      "feature": "Chloride",
+      "importance": 0.03571428571428571
+    },
+    {
+      "feature": "Glucose",
+      "importance": 0.03571428571428571
+    },
+    {
+      "feature": "Magnesium",
+      "importance": 0.03571428571428571
+    },
+    {
+      "feature": "Calcium",
+      "importance": 0.03571428571428571
+    },
+    {
+      "feature": "Ionised_Ca",
+      "importance": 0.03571428571428571
+    },
+    {
+      "feature": "CO2_mEqL",
+      "importance": 0.03571428571428571
+    },
+    {
+      "feature": "PaO2_FiO2",
+      "importance": 0.03571428571428571
+    },
+    {
+      "feature": "Creatinine",
+      "importance": 0.03571428571428571
+    },
+    {
+      "feature": "SGOT",
+      "importance": 0.03571428571428571
+    },
+    {
+      "feature": "Total_bili",
+      "importance": 0.03571428571428571
+    },
+    {
+      "feature": "INR",
+      "importance": 0.03571428571428571
+    },
+    {
+      "feature": "input_total",
+      "importance": 0.03571428571428571
+    },
+    {
+      "feature": "input_4hourly",
+      "importance": 0.03571428571428571
+    },
+    {
+      "feature": "WBC_count",
+      "importance": 0.03571428571428571
+    },
+    {
+      "feature": "Platelets_count",
+      "importance": 0.03571428571428571
+    },
+    {
+      "feature": "paO2",
+      "importance": 0.03571428571428571
+    },
+    {
+      "feature": "paCO2",
+      "importance": 0.03571428571428571
+    },
+    {
+      "feature": "Arterial_BE",
+      "importance": 0.03571428571428571
+    },
+    {
+      "feature": "HCO3",
+      "importance": 0.03571428571428571
+    },
+    {
+      "feature": "Arterial_lactate",
+      "importance": 0.03571428571428571
+    },
+    {
+      "feature": "Albumin",
+      "importance": 0.03571428571428571
+    },
+    {
+      "feature": "cumulated_balance",
+      "importance": 0.03571428571428571
+    }
+  ],
+  "bfo_parameters": {
+    "N": 10,
+    "NbrDiv": 1,
+    "T": 20,
+    "c": 0.6,
+    "Ped": 0.2,
+    "thres_ub": 0.9,
+    "thres_lb": 0.4
+  },
+  "fitness_curve": [
+    0.46741824124001496,
+    0.4671379905039317,
+    0.4671379905039317,
+    0.4671379905039317,
+    0.4671379905039317,
+    0.4671379905039317,
+    0.4671379905039317,
+    0.4671379905039317,
+    0.4671379905039317,
+    0.4671379905039317,
+    0.4671379905039317,
+    0.4671379905039317,
+    0.4671379905039317,
+    0.4671379905039317,
+    0.46005415874046734,
+    0.46005415874046734,
+    0.46005415874046734,
+    0.46005415874046734,
+    0.46005415874046734,
+    0.46005415874046734,
+    0.46005415874046734
+  ],
+  "selected_feature_count": 28
+}

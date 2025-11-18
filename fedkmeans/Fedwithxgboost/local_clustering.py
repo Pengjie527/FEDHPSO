@@ -63,7 +63,7 @@ class LocalSite:
     
     def load_data(self, feature_columns: List[str] = None, use_first_bloc_only: bool = True):
         """
-        加载本地数据
+        加载本地数据，可选择只使用指定的特征
         
         Parameters:
         -----------
@@ -71,7 +71,13 @@ class LocalSite:
             需要使用的特征列，如果为None则使用所有数值列
         use_first_bloc_only : bool, default=True
             是否只使用每个患者的第一条bloc数据
+        
+        Returns:
+        --------
+        DataFrame: 预处理后的特征数据
         """
+        logger.info(f"站点 {self.site_id} 开始加载数据: {self.data_path}")
+        
         # 创建预处理配置
         config = PreprocessingConfig(
             use_first_bloc_only=use_first_bloc_only,
@@ -79,13 +85,27 @@ class LocalSite:
         )
         
         # 使用预处理模块加载和预处理数据
-        self.data, self.features, feature_columns_used, self.scaler = preprocess_data(
+        self.data, self.features, all_feature_columns_used, self.scaler = preprocess_data(
             data_path=self.data_path,
             config=config,
             site_id=self.site_id,
             logger_instance=logger
         )
-
+        
+        # 如果指定了选中的特征，则验证这些特征是否都被成功处理
+        if feature_columns:
+            # 确保所有指定的特征都存在于预处理后的数据中
+            valid_features = [f for f in feature_columns if f in all_feature_columns_used]
+            missing_features = set(feature_columns) - set(all_feature_columns_used)
+            
+            if missing_features:
+                logger.warning(f"站点 {self.site_id} 中缺少以下指定的特征: {missing_features}")
+            
+            logger.info(f"站点 {self.site_id} 使用筛选后的特征，原始指定 {len(feature_columns)} 个，成功加载 {len(valid_features)} 个")
+        else:
+            logger.info(f"站点 {self.site_id} 使用所有可用特征，数量: {len(all_feature_columns_used)}")
+            
+        logger.info(f"站点 {self.site_id} 数据加载完成")
         return self.features
     
     def normalize_data(self):
@@ -515,7 +535,8 @@ def run_local_clustering_all_sites(
     k_method: str = 'silhouette', #在这里修改聚类方法
     min_k: int = 2,
     max_k: int = 50,
-    test_k_range: tuple = None
+    test_k_range: tuple = None,
+    selected_features: List[str] = None
 ) -> Tuple[List[LocalSite], List[Dict]]:
     """
     在所有站点上运行本地聚类
@@ -558,14 +579,23 @@ def run_local_clustering_all_sites(
     sites = []
     upload_infos = []
     
+    # 记录特征信息
+    if selected_features:
+        logger.info(f"开始多站点本地聚类，使用筛选后的特征，站点数量: {len(data_paths)}, 特征数量: {len(selected_features)}")
+    elif feature_columns:
+        logger.info(f"开始多站点本地聚类，使用指定的特征，站点数量: {len(data_paths)}, 特征数量: {len(feature_columns)}")
+    else:
+        logger.info(f"开始多站点本地聚类，使用所有特征，站点数量: {len(data_paths)}")
+    
     for site_id, data_path in data_paths.items():
         logger.info(f"\n处理站点 {site_id}...")
         
         # 创建站点实例
         site = LocalSite(site_id, data_path, n_clusters)
         
-        # 加载和预处理数据
-        site.load_data(feature_columns, use_first_bloc_only=use_first_bloc_only)
+        # 加载和预处理数据 - 使用selected_features优先，其次是feature_columns
+        features_to_use = selected_features if selected_features is not None else feature_columns
+        site.load_data(features_to_use, use_first_bloc_only=use_first_bloc_only)
         site.normalize_data()
         
         # 执行本地聚类
@@ -896,10 +926,42 @@ def visualize_evaluation_metrics(sites: List[LocalSite], save_path: str = None):
     plt.close()
 
 
-if __name__ == "__main__":
-    # 测试代码
-    # 获取项目根目录（假设脚本在 fedkmeans/psowithkmeans/ 目录下）
-    import os
+def load_selected_features(features_file: str = None) -> List[str]:
+    """
+    从文件中加载选中的特征列表
+    
+    Args:
+        features_file: 特征文件路径，如果为None则返回None
+    
+    Returns:
+        选中的特征名称列表
+    """
+    if not features_file or not os.path.exists(features_file):
+        return None
+    
+    selected_features = []
+    with open(features_file, 'r') as f:
+        for line in f:
+            feature = line.strip()
+            if feature:
+                selected_features.append(feature)
+    
+    logger = get_logger(level=logging.INFO)
+    logger.info(f"从 {features_file} 加载了 {len(selected_features)} 个特征")
+    return selected_features
+
+
+def main(selected_features_file: str = None):
+    """
+    主函数：运行本地聚类分析
+    
+    Args:
+        selected_features_file: 选中的特征文件路径，如果为None则使用所有特征
+    """
+    # 加载选中的特征
+    selected_features = load_selected_features(selected_features_file)
+    
+    # 获取项目根目录（假设脚本在 fedkmeans/Fedwithxgboost 目录下）
     project_root = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..'))
     
     data_paths = {
@@ -908,11 +970,20 @@ if __name__ == "__main__":
         3: os.path.join(project_root, "Dataset/datawithser/group3_mimic_data.csv")
     }
     
+    # 根据是否使用选中特征设置输出目录
+    output_dir = './results_local_clustering'
+    if selected_features:
+        output_dir = './results_local_clustering_selected_features'
+    
+    # 确保输出目录存在
+    os.makedirs(output_dir, exist_ok=True)
+    
     sites, upload_infos = run_local_clustering_all_sites(
         data_paths=data_paths,
         n_clusters=750,
         random_state=42,
-        auto_determine_k=True  # 启用自动确定聚类数量
+        auto_determine_k=True,  # 启用自动确定聚类数量
+        selected_features=selected_features
     )
     
     print("\n本地聚类完成！")
@@ -961,21 +1032,36 @@ if __name__ == "__main__":
             sites=sites,
             use_pca=True,
             use_tsne=False,  # 设为True可启用t-SNE（较慢但效果更好）
-            save_path=None  # 设为路径字符串可保存图片，如 "clustering_results.png"
+            save_path=os.path.join(output_dir, "clustering_results.png")
         )
         
         # 可视化统计信息
         visualize_cluster_statistics(
             sites=sites,
-            save_path=None  # 设为路径字符串可保存图片，如 "cluster_statistics.png"
+            save_path=os.path.join(output_dir, "cluster_statistics.png")
         )
         
         # 可视化评估指标
         visualize_evaluation_metrics(
             sites=sites,
-            save_path=None  # 设为路径字符串可保存图片，如 "evaluation_metrics.png"
+            save_path=os.path.join(output_dir, "evaluation_metrics.png")
         )
+        
+        print(f"可视化结果已保存至: {output_dir}")
     except Exception as e:
         logger.warning(f"可视化过程中出现错误: {e}")
         logger.info("可以继续执行后续步骤")
+
+
+def get_logger(level=logging.INFO):
+    """
+    获取日志记录器
+    """
+    return logging.getLogger(__name__)
+
+
+if __name__ == "__main__":
+    # 调用主函数，可以传入特征文件路径
+    # 示例: main("selected_features.txt")
+    main()
 

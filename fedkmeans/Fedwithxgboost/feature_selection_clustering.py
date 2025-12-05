@@ -15,7 +15,7 @@ from typing import Dict, List, Tuple, Optional
 sys.path.append(os.path.dirname(os.path.abspath(__file__)))
 
 # 导入特征筛选模块
-from feature_importance_xgboost import (
+from feature_importance import (
     bacterial_foraging_feature_selection,
     get_feature_names_from_data
 )

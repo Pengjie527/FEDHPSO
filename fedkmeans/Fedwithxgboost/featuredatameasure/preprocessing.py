@@ -252,7 +252,7 @@ class PreprocessingConfig:
             lower_quantile: float = 0.01,
             upper_quantile: float = 0.99,
             apply_log_transform_first: bool = False,
-            remove_correlated_features: bool = True,
+            remove_correlated_features: bool = False,
             corr_threshold: float = 0.9,
     ):
         """
